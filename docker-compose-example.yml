@@ -1,0 +1,54 @@
+version: "3"
+services: 
+  # 服务名称
+  php:
+    # 镜像名字
+    image: dnmp-php:${PHP_VERSION}
+    # 容器名称
+    container_name: dnmp-php
+    # 指定构建的 Dockerfile 文件
+    build:
+      context: ./services/php74
+      # 设置构建参数
+      args:
+        TZ: ${TZ}
+        CONTAINER_PHP_PACKAGE_URL: ${CONTAINER_PHP_PACKAGE_URL}
+        PHP_VERSION: ${PHP_VERSION}
+        PHP_WORK_DIR: ${PHP_WORK_DIR}
+        PHP_EXTENSIONS: ${PHP_EXTENSIONS}
+    # 设置环境变量
+    environment:                        
+      - TZ=${TZ}
+    # 对外暴露端口
+    expose:
+      - 9501
+    extra_hosts:
+      - "www.site.com:127.0.0.1"
+    # 端口映射
+    ports:
+      - "9501:9501"
+      - "9502:9502"
+    # 将宿主机的目录挂载到容器中
+    volumes:
+      - ${PHP_CONF_INI_FILE}:/usr/local/etc/php/php.ini:ro
+      - ${PHP_CONF_FPM_FILE}:/usr/local/etc/php-fpm.d/www.conf:rw
+      - ${PHP_SOURCE_DIR}:${PHP_WORK_DIR}:rw
+      - ${PHP_LOG_DIR}:/var/log/php
+    # 指定容器退出后的重启策略为始终重启
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    networks:
+      - docker-dnmp-default
+
+# 网络配置
+networks:
+  # 定义网络名
+  docker-dnmp-default:
+    # bridge 驱动
+    driver: bridge
+    # IP 地址管理相关的配置
+    ipam:
+      driver: default
+      config:
+       - subnet: 192.168.10.0/24
