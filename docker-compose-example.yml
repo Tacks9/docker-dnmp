@@ -76,6 +76,35 @@ services:
     networks:
       - docker-dnmp-default
 
+     
+  # 服务名称
+  mysql:
+    # 镜像名称
+    image: dnmp-mysql:${MYSQL_VERSION}
+    # 容器名称
+    container_name: dnmp-mysql
+    build:
+      context: ./services/mysql
+      args:
+        MYSQL_VERSION: ${MYSQL_VERSION}
+    # 环境变量
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_ROOT_HOST: "${MYSQL_ROOT_HOST}"
+      TZ: "$TZ"
+    # 端口映射
+    ports:
+      - "${MYSQL_HOST_PORT}:3306"
+    # 磁盘挂载
+    volumes:
+      - ${MYSQL_CONF_MYSQL_CNF}:/etc/mysql/conf.d/mysql.cnf:ro
+      - ${MYSQL_CONF_DIR_DATA}:/var/lib/mysql/:rw
+      - ${MYSQL_LOG_DIR}:/var/log/mysql/:rw
+    restart: always
+    networks:
+      - docker-dnmp-default
+    
+
 # 网络配置
 networks:
   # 定义网络名

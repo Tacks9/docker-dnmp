@@ -1,0 +1,58 @@
+# 【客户端连接MySQL的配置】
+[client]
+port = 3306
+# 设置编码
+default-character-set = utf8mb4
+
+
+# 【MySQL命令行工具的配置】
+[mysql]
+default-character-set   = utf8mb4
+
+
+# 【MySQL服务器的配置】
+[mysqld]
+user = mysql
+bind-address = 0.0.0.0
+port = 3306
+
+# 允许最大连接数
+max_connections = 1000
+# SQL 模式
+sql_mode = NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+# 设置默认引擎
+default-storage-engine=InnoDB
+# 设置协议认证方式 
+## 自动 Mysql8.0.4 之后，即使配置默认验证方式为 mysql_native_password 也无法生效，需要进入MySQL服务器手动修改配置，然后刷新生效。
+default_authentication_plugin = mysql_native_password
+# 跳过授权表 忘记密码root密码时添加此选项
+#skip-grant-tables
+
+
+#====================================================================================================================#
+#================================================== 编码模块 =========================================================#
+#====================================================================================================================#
+# 设置编码
+character-set-server    = utf8mb4
+collation-server        = utf8mb4_unicode_ci
+init_connect            = 'SET NAMES utf8mb4'
+
+#====================================================================================================================#
+#================================================== 日志模块 =========================================================#
+#====================================================================================================================#
+# 开启通用日志 -> 记录建立的客户端连接和执行的语句
+general_log=1
+# 通用查询日志输出格式
+log_output = file
+# 是否启用慢查询
+slow_query_log = on
+# 大于此值3s 记录到慢日志 
+long_query_time= 3
+# 慢日志
+slow-query-log-file     = /var/log/mysql/mysql.slow.log
+# 错误日志
+log-error               = /var/log/mysql/mysql.error.log
+# 时区
+default-time-zone       = '+8:00'
+
+

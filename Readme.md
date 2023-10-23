@@ -7,6 +7,9 @@
 ```shell
 /
 ├── services                    Service Build
+│   ├── mysql                   Mysql 
+│   │   ├── Dockerfile                 Dockerfile
+│   │   ├── conf.d/                    conf.d    mysql.cnf
 │   ├── nginx                   Nginx 
 │   │   ├── Dockerfile                 Dockerfile
 │   │   ├── nginx.conf                 nginx conf
@@ -21,6 +24,9 @@
 ├── logs                        Service Log
 │   ├── nginx                       Nginx Log
 │   ├── php74                       PHP74 Log
+│   ├── mysql                       Mysql Log
+├── data                        Service Data
+│   ├── mysql                       Mysql Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -30,6 +36,7 @@
 
 - php7.4
 - nginx
+- mysql
 
 
 ## INIT
