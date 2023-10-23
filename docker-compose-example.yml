@@ -41,6 +41,41 @@ services:
     networks:
       - docker-dnmp-default
 
+  # 服务名称
+  nginx:
+    # 镜像名称
+    image: dnmp-nginx:${NGINX_VERSION}
+    # 容器名称
+    container_name: dnmp-nginx
+    # 指定 Dockerfile
+    build:
+      context: ./services/nginx
+      args:
+        TZ: ${TZ}
+        CONTAINER_NGINX_PACKAGE_URL: ${CONTAINER_NGINX_PACKAGE_URL}
+        NGINX_VERSION: ${NGINX_VERSION}
+    # 设置环境变量
+    environment:                        
+      - TZ=${TZ}
+    # 端口映射
+    ports:
+      - "${NGINX_HTTP_HOST_PORT}:80"
+      - "${NGINX_HTTPS_HOST_PORT}:443"
+    links:
+      - php
+    # 磁盘挂载
+    volumes:
+      - ${NGINX_SOURCE_DIR}:${NGINX_WORK_DIR}:rw
+      - ${NGINX_CONF_NGINX_CONF}:/etc/nginx/nginx.conf:rw
+      - ${NGINX_CONF_DIR_SSL}:/etc/nginx/ssl/:rw
+      - ${NGINX_CONF_DIR_CONFD}:/etc/nginx/conf.d/:rw
+      - ${NGINX_CONF_DIR_FASTCGI}:/etc/nginx/fastcgi/:rw
+      - ${NGINX_CONF_DIR_ERROR}:/etc/nginx/error/:rw
+      - ${NGINX_LOG_DIR}:/var/log/nginx/:rw
+    restart: always
+    networks:
+      - docker-dnmp-default
+
 # 网络配置
 networks:
   # 定义网络名
