@@ -21,12 +21,17 @@
 │   │   ├── Dockerfile               Dockerfile
 │   │   ├── php-fpm.conf             php-fpm conf
 │   │   ├── extensions/              PHP Extension Shell
+│   ├── redis                   Redis 
+│   │   ├── Dockerfile                 Dockerfile
+│   │   ├── redis.conf                 redis.conf
 ├── logs                        Service Log
 │   ├── nginx                       Nginx Log
 │   ├── php74                       PHP74 Log
 │   ├── mysql                       Mysql Log
+│   ├── redis                       Redis Log
 ├── data                        Service Data
 │   ├── mysql                       Mysql Data
+│   ├── redis                       Redis Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -37,6 +42,7 @@
 - php7.4
 - nginx
 - mysql
+- redis
 
 
 ## INIT

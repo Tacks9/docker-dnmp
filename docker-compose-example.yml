@@ -105,6 +105,34 @@ services:
       - docker-dnmp-default
     
 
+  # 服务名称
+  redis:
+    # 镜像名称
+    image: dnmp-redis:${REDIS_VERSION}
+    # 容器名称
+    container_name: dnmp-redis
+    # 编译文件
+    build:
+      context: ./services/redis
+      args:
+        REDIS_VERSION: ${REDIS_VERSION}
+    # 环境变量
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      TZ: "$TZ"
+    # 端口映射
+    ports:
+      - "${REDIS_HOST_PORT}:6379"
+    # 磁盘挂载
+    volumes:
+      - ${REDIS_CONF_REDIS_CONF}:/etc/redis.conf:ro
+      - ${REDIS_CONF_DIR_DATA}:/data/:rw
+    restart: always
+    entrypoint: ["redis-server", "/etc/redis.conf" , "--requirepass" , "${REDIS_PASSWORD}"]
+    restart: always
+    networks:
+      - docker-dnmp-default
+
 # 网络配置
 networks:
   # 定义网络名
