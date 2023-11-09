@@ -396,6 +396,34 @@ services:
 #======================================================================================> [influxdb] END
     
 
+
+#======================================================================================> [grafana] START
+
+  grafana:
+    # 容器名称
+    container_name: dnmp-grafana
+    # 镜像名称
+    image: grafana/grafana:${GRAFANA_VERSION}
+    # 端口映射
+    ports:
+      - ${GRAFANA_PORT}:3000
+    # 磁盘挂载
+    volumes:
+      - ${GRAFANA_DIR_DATA}:/var/lib/grafana
+      - ${GRAFANA_CONF_INI}:/etc/grafana/grafana.ini:rw
+    environment:
+      - TZ="$TZ"
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_CONF_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_CONF_PWD}
+    restart: always
+    networks:
+      - docker-dnmp-default
+      
+      
+#======================================================================================> [grafana] END
+    
+
+
 # 网络配置
 networks:
   # 定义网络名

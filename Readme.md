@@ -24,6 +24,8 @@
 │   ├── redis                   Redis 
 │   │   ├── Dockerfile                 Dockerfile
 │   │   ├── redis.conf                 redis.conf
+│   ├── grafana                 Grafana 
+│   │   ├── grafana.ini                 grafana.ini
 ├── logs                        Service Log
 │   ├── nginx                       Nginx Log
 │   ├── php74                       PHP74 Log
@@ -35,6 +37,7 @@
 │   ├── kafka                       Kafka Data
 │   ├── etcd                        Etcd Data
 │   ├── influxdb                    InfluxDB Data
+│   ├── grafana                     Grafana Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -49,6 +52,7 @@
 - kafka
 - etcd
 - influxdb
+- grafana
 
 
 ## INIT
