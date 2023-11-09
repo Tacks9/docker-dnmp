@@ -133,6 +133,122 @@ services:
     networks:
       - docker-dnmp-default
 
+
+#======================================================================================> [kafka]
+
+  kafka-node1:
+    # 容器名称
+    container_name: dnmp-kafka-node1
+    # 镜像名称
+    image: bitnami/kafka:${KAFKA_VERSION}
+    user: root
+    # 端口映射
+    ports:
+      - ${KAFKA_PORT_CLIENT_NODE1}:9092
+      - ${KAFKA_PORT_CONTROLLER_NODE1}:9093
+    # 磁盘挂载
+    volumes:
+      # 数据目录
+      - ${KAFKA_DIR_DATA_NODE1}:/bitnami/kafka:rw
+    environment:
+      - TZ="$TZ"
+      # 指定Kafka节点的ID为1，唯一
+      - KAFKA_CFG_NODE_ID=1
+      # 启用KRaft模式 , 即Kafka替代Zookeeper
+      - KAFKA_ENABLE_KRAFT=yes
+      # 设置Kafka节点的角色 既要做 broker 又要做 controller
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      # KRaft集群的ID ， 构造一个 UUID 
+      - KAFKA_KRAFT_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+      # 指定供外部使用的控制类请求信息
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER  
+      # 定义外网访问地址（宿主机ip地址和端口）
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      # 监听器的地址为当前节点的IP和相应的端口
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 
+      # 定义安全协议
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      # 设置控制器的选举集群成员
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-node1:9093,2@kafka-node2:9093,3@kafka-node3:9093
+      # 允许使用PLAINTEXT监听器，默认false，不建议在生产环境使用
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # 禁止自动创建主题
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false 
+      # 设置broker最大内存，和初始内存
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M
+    restart: always
+    networks:
+      - docker-dnmp-default
+
+  kafka-node2:
+    # 容器名称
+    container_name: dnmp-kafka-node2
+    # 镜像名称
+    image: bitnami/kafka:${KAFKA_VERSION}
+    user: root
+    # 端口映射
+    ports:
+      - ${KAFKA_PORT_CLIENT_NODE2}:9092
+      - ${KAFKA_PORT_CONTROLLER_NODE2}:9093
+    # 磁盘挂载
+    volumes:
+      # 数据目录
+      - ${KAFKA_DIR_DATA_NODE2}:/bitnami/kafka:rw
+    environment:
+      - TZ="$TZ"
+      - KAFKA_CFG_NODE_ID=2
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_KRAFT_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER  
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-node1:9093,2@kafka-node2:9093,3@kafka-node3:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false 
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M
+    restart: always
+    networks:
+      - docker-dnmp-default
+
+  kafka-node3:
+    # 容器名称
+    container_name: dnmp-kafka-node3
+    # 镜像名称
+    image: bitnami/kafka:${KAFKA_VERSION}
+    user: root
+    # 端口映射
+    ports:
+      - ${KAFKA_PORT_CLIENT_NODE3}:9092
+      - ${KAFKA_PORT_CONTROLLER_NODE3}:9093
+    # 磁盘挂载
+    volumes:
+      # 数据目录
+      - ${KAFKA_DIR_DATA_NODE3}:/bitnami/kafka:rw
+    environment:
+      - TZ="$TZ"
+      - KAFKA_CFG_NODE_ID=3
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_KRAFT_CLUSTER_ID=${KAFKA_CLUSTER_ID}
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER  
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-node1:9093,2@kafka-node2:9093,3@kafka-node3:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false 
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M
+    restart: always
+    networks:
+      - docker-dnmp-default
+
+
+#======================================================================================> [kafka]
+
+
+
 # 网络配置
 networks:
   # 定义网络名

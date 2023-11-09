@@ -32,6 +32,7 @@
 ├── data                        Service Data
 │   ├── mysql                       Mysql Data
 │   ├── redis                       Redis Data
+│   ├── kafka                       Kafka Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -43,6 +44,7 @@
 - nginx
 - mysql
 - redis
+- kafka
 
 
 ## INIT
@@ -60,4 +62,37 @@ docker-compose up -d
 
 # restart container
 docker-compose restart
+```
+
+## CMD
+
+### kafka
+
+```shell
+# java version
+$ java -version
+openjdk version "17.0.8" 2023-07-18 LTS
+OpenJDK Runtime Environment (build 17.0.8+7-LTS)
+OpenJDK 64-Bit Server VM (build 17.0.8+7-LTS, mixed mode, sharing)
+
+# kafka version
+$ kafka-broker-api-versions.sh --version --bootstrap-server dnmp-kafka-node1:9092 dnmp-kafka-node2:9092 dnmp-kafka-node3:9092 
+
+# kafka bin
+$ ls /opt/bitnami/kafka/bin
+
+# kafka create topic (3 Replica & 5 Partition)
+$ kafka-topics.sh --create --topic test --replication-factor 3 --partitions 5 --bootstrap-server kafka-node1:9092 kafka-node2:9092 kafka-node3:9092
+
+# kafka show topic list
+$ kafka-topics.sh --list  --bootstrap-server dnmp-kafka-node1:9092 dnmp-kafka-node2:9092 dnmp-kafka-node3:9092
+
+# kafka show topic describe
+$ kafka-topics.sh --describe --topic test  --bootstrap-server kafka-node1:9092 kafka-node2:9092 kafka-node3:9092
+
+# kafka open producer (producer client => --broker-list)
+$ kafka-console-producer.sh --topic test --broker-list kafka-node1:9092 kafka-node2:9092 kafka-node3:9092
+
+# kafka open consumer (consumer client => --bootstrap-server)
+$ kafka-console-consumer.sh --topic test --bootstrap-server kafka-node1:9092 kafka-node2:9092 kafka-node3:9092 
 ```
