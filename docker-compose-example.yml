@@ -362,6 +362,40 @@ services:
 #======================================================================================> [etcd] END
 
 
+
+#======================================================================================> [influxdb] START
+
+  influxdb:
+    container_name: dnmp-influxdb
+    image: influxdb:${INFLUXDB_VERSION}
+    ports:
+      - "${INFLUXDB_PORT}:8086"
+    volumes:
+      - ${INFLUXDB_DIR_DATA}:/var/lib/influxdb:rw
+    environment:
+      - TZ="$TZ"
+      # InfluxDB初始化的模式为“setup”
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      # InfluxDB初始化时的管理员用户名密码
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_CONF_USER}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_CONF_PWD}
+      # InfluxDB初始化时创建的组织（Organization）
+      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_CONF_ORG}
+      # InfluxDB初始化时创建的数据存储桶（Bucket）
+      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_CONF_BUCKET}
+      # InfluxDB配置文件的路径
+      - INFLUX_CONFIGS_PATH=/etc/influxdb2/influx-configs
+      # InfluxDB数据存储的 BoltDB 文件的路径
+      - INFLUXD_BOLT_PATH=/var/lib/influxdb2/influxd.bolt
+      # InfluxDB数据引擎的路径，用于存储实际的时间序列数据
+      - INFLUXD_ENGINE_PATH=/var/lib/influxdb2/engine
+    restart: always
+    networks:
+      - docker-dnmp-default
+      
+#======================================================================================> [influxdb] END
+    
+
 # 网络配置
 networks:
   # 定义网络名

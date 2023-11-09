@@ -33,7 +33,8 @@
 │   ├── mysql                       Mysql Data
 │   ├── redis                       Redis Data
 │   ├── kafka                       Kafka Data
-│   ├── Etcd                        Etcd Data
+│   ├── etcd                        Etcd Data
+│   ├── influxdb                    InfluxDB Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -47,6 +48,7 @@
 - redis
 - kafka
 - etcd
+- influxdb
 
 
 ## INIT
@@ -132,4 +134,63 @@ $ etcdctl del name
 
 # etcd watch key
 $ etcdctl watch name
+```
+
+### influxdb
+
+```shell
+# come in influxdb
+$ docker exec -it  dnmp-influxdb /bin/bash
+
+# influxdb show bucket list
+$ influx bucket list
+
+# influxdb create bucket 
+$ influx bucket create --name test --org tacks
+
+
+# influxdb add point-data to bucket (time unit is second)
+$ influx write --bucket test --precision s "beijing,unit=temperature avg=8.8,max=12.0 1699522715"
+
+# date 
+$ date -u +"%Y-%m-%dT%H:%M:%SZ"
+
+# influxdb search
+$ influx query '
+from(bucket: "test")
+    |> range(start: 2023-11-08T09:40:45Z, stop: 2023-11-09T09:40:45Z)
+    |> filter(fn: (r) => r._measurement == "beijing")
+    |> filter(fn: (r) => r._field== "max" or r._field == "avg")
+'
+
+# influxdb delete point-data with time
+$ influx delete --bucket test --start 2023-11-08T09:40:45Z --stop 2023-11-09T09:40:45Z 
+
+# influxdb delete bucket
+$ influx bucket delete -n test -o tacks
+
+
+# come in influxdb Interactive Command Line 
+$ influx v1 shell
+
+# [influxdb sql] show bucket list
+$ show databases
+
+# [influxdb sql] use a bucket
+$ use test
+
+# [influxdb sql] show measurement list
+$ show measurements;
+
+# [influxdb sql] select measurement points-data
+$ select * from "beijing" limit 10;
+
+# [influxdb sql] show tag list
+$ show tag keys;
+
+# [influxdb sql] show fields
+$ show field keys;
+
+# [influxdb sql] show data storage policy list
+$ show retention policies;
 ```
