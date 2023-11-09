@@ -33,6 +33,7 @@
 │   ├── mysql                       Mysql Data
 │   ├── redis                       Redis Data
 │   ├── kafka                       Kafka Data
+│   ├── Etcd                        Etcd Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -45,6 +46,7 @@
 - mysql
 - redis
 - kafka
+- etcd
 
 
 ## INIT
@@ -95,4 +97,39 @@ $ kafka-console-producer.sh --topic test --broker-list kafka-node1:9092 kafka-no
 
 # kafka open consumer (consumer client => --bootstrap-server)
 $ kafka-console-consumer.sh --topic test --bootstrap-server kafka-node1:9092 kafka-node2:9092 kafka-node3:9092 
+```
+
+### etcd
+
+```shell
+# come in etcd
+$ docker exec -it  dnmp-etcd-node1 /bin/bash
+
+# version etcd & api
+$ etcdctl version
+
+# etcd show cluster nodes
+$ etcdctl member list
+
+$ etcdctl member list --write-out=table
+
+# etcd check the health status of etcd cluster nodes
+$ etcdctl endpoint health
+
+$ etcdctl endpoint health  --endpoints http://etcd-node1:2379,http://etcd-node2:2379,http://etcd-node3:2379
+
+$ etcdctl endpoint health  --endpoints http://etcd-node1:2379,http://etcd-node2:2379,http://etcd-node3:2379 --write-out=table
+
+
+# etcd add key-value
+$ etcdctl put name test
+
+# etcd get key
+$ etcdctl get name
+
+# etcd delete key
+$ etcdctl del name
+
+# etcd watch key
+$ etcdctl watch name
 ```

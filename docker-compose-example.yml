@@ -249,6 +249,119 @@ services:
 
 
 
+
+
+
+#======================================================================================> [etcd] START
+
+  etcd-node1:
+    # 容器名称
+    container_name: dnmp-etcd-node1
+    # 镜像名称
+    image: bitnami/etcd:${ETCD_VERSION}
+    # 端口映射
+    ports:
+      - ${ETCD_PORT_CLIENT_NODE1}:2379
+      - ${ETCD_PORT_PEER_NODE1}:2380
+    # 磁盘挂载
+    volumes:
+      # 数据目录
+      - ${ETCD_DIR_DATA_NODE1}:/bitnami/etcd:rw
+    environment:  
+      - TZ="$TZ"
+      # etcd 的名字
+      - ETCD_NAME=etcd1    
+      # 版本 API (2 or 3)
+      - ETCDCTL_API=3
+      # ETCD集 群的成员之间使用 token
+      - ETCD_TOKE=ETCD-GROUP-TOKEN         
+      # 日志级别                    
+      - ETCD_LOG_LEVEL=debug
+      # 允许不用密码登录
+      - ALLOW_NONE_AUTHENTICATION=yes      
+      #  监听在本地所有网络接口 - 于监听客户端通信的 URL 列表                 
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379          
+      # 监听在本地所有网络接口 - 用于监听伙伴通信的 URL 列表
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380      
+      # 列出这个成员的客户端URL，通告给集群中的其他成员     
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd-node1:2379
+      # 列出这个成员的伙伴 URL 以便通告给集群的其他成员        
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd-node1:2380  
+      # 集群配置-初始化一个集群记号
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster             
+      # 集群配置-集群节点配置
+      - ETCD_INITIAL_CLUSTER=etcd1=http://etcd-node1:2380,etcd2=http://etcd-node2:2380,etcd3=http://etcd-node3:2380 
+      # 初始化集群状态
+      - ETCD_INITIAL_CLUSTER_STATE=new                      
+    restart: always
+    networks:
+      - docker-dnmp-default
+
+  etcd-node2:
+    # 容器名称
+    container_name: dnmp-etcd-node2
+    # 镜像名称
+    image: bitnami/etcd:${ETCD_VERSION}
+    # 端口映射
+    ports:
+      - ${ETCD_PORT_CLIENT_NODE2}:2379
+      - ${ETCD_PORT_PEER_NODE2}:2380
+    # 磁盘挂载
+    volumes:
+      # 数据目录
+      - ${ETCD_DIR_DATA_NODE2}:/bitnami/etcd:rw
+    environment:  
+      - TZ="$TZ"
+      - ETCD_NAME=etcd2
+      - ETCDCTL_API=3
+      - ETCD_TOKE=ETCD-GROUP-TOKEN         
+      - ETCD_LOG_LEVEL=debug
+      - ALLOW_NONE_AUTHENTICATION=yes      
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379          
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380      
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd-node2:2379
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd-node2:2380  
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster             
+      - ETCD_INITIAL_CLUSTER=etcd1=http://etcd-node1:2380,etcd2=http://etcd-node2:2380,etcd3=http://etcd-node3:2380 
+      - ETCD_INITIAL_CLUSTER_STATE=new                      
+    restart: always
+    networks:
+      - docker-dnmp-default
+
+  etcd-node3:
+    # 容器名称
+    container_name: dnmp-etcd-node3
+    # 镜像名称
+    image: bitnami/etcd:${ETCD_VERSION}
+    # 端口映射
+    ports:
+      - ${ETCD_PORT_CLIENT_NODE3}:2379
+      - ${ETCD_PORT_PEER_NODE3}:2380
+    # 磁盘挂载
+    volumes:
+      # 数据目录
+      - ${ETCD_DIR_DATA_NODE3}:/bitnami/etcd:rw
+    environment:  
+      - TZ="$TZ"
+      - ETCD_NAME=etcd3
+      - ETCDCTL_API=3
+      - ETCD_TOKE=ETCD-GROUP-TOKEN         
+      - ETCD_LOG_LEVEL=debug
+      - ALLOW_NONE_AUTHENTICATION=yes      
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379          
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380      
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd-node3:2379
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd-node3:2380  
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster             
+      - ETCD_INITIAL_CLUSTER=etcd1=http://etcd-node1:2380,etcd2=http://etcd-node2:2380,etcd3=http://etcd-node3:2380 
+      - ETCD_INITIAL_CLUSTER_STATE=new                      
+    restart: always
+    networks:
+      - docker-dnmp-default
+
+#======================================================================================> [etcd] END
+
+
 # 网络配置
 networks:
   # 定义网络名
