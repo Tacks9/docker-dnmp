@@ -30,12 +30,15 @@
 │   │   ├── node1/                      node1 es.yml
 │   │   ├── node2/                      node2 es.yml
 │   │   ├── node3/                      node3 es.yml
+│   ├── kibane                  Kibana
+│   │   ├── kibana.yml                  Kibana.yml
 ├── logs                        Service Log
 │   ├── nginx                       Nginx Log
 │   ├── php74                       PHP74 Log
 │   ├── mysql                       Mysql Log
 │   ├── redis                       Redis Log
 │   ├── es                          Es Log
+│   ├── kibana                      Kibana Log
 ├── data                        Service Data
 │   ├── mysql                       Mysql Data
 │   ├── redis                       Redis Data
@@ -44,6 +47,7 @@
 │   ├── influxdb                    InfluxDB Data
 │   ├── grafana                     Grafana Data
 │   ├── es                          Elasticsearch Cluster Data
+│   ├── kibana                      Kibana Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -60,6 +64,7 @@
 - influxdb
 - grafana
 - elasticsearch
+- kibana
 
 
 ## INIT

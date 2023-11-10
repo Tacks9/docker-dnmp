@@ -556,6 +556,46 @@ services:
 #======================================================================================> [elasticsearch] END
     
 
+#======================================================================================> [kibana] START
+
+  kibana:
+    # 容器名称
+    container_name: dnmp-kibana
+    # 镜像名称
+    image: kibana:${KIBANA_VERSION}
+    # 端口映射
+    ports:
+      - ${KIBANA_PORT}:5601
+    # 磁盘挂载
+    volumes:
+      - ${KIBANA_DIR_LOG}:/usr/share/kibana/logs
+      - ${KIBANA_DIR_DATA}:/usr/share/kibana/data
+      - ${KIBANA_CONF_YML}:/usr/share/kibana/config/kibana.yml
+    # 链接其他容器
+    links:
+      - es-node1:es-node1
+      - es-node2:es-node2
+      - es-node3:es-node3
+    # 设置环境变量
+    environment:
+      - TZ="$TZ"
+      - LANG="en_US.UTF-8"
+      # 国际化-中文设置
+      - i18n.locale="zh-CN"
+      # 系统名称
+      - SERVER_NAME=dnmp-kibana
+      # 访问用户名
+      - ELASTICSEARCH_USERNAME="root"
+      # 访问密码
+      - ELASTICSEARCH_PASSWORD="123456"
+      # 节点 ES
+      - ELASTICSEARCH_HOSTS="http://es-node1:9200"
+    restart: always
+    networks:
+      - docker-dnmp-default
+
+#======================================================================================> [kibana] END
+
 
 # 网络配置
 networks:

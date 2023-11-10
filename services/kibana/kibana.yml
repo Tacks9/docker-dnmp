@@ -1,0 +1,19 @@
+#
+# ** THIS IS AN AUTO-GENERATED FILE **
+#
+
+# Default Kibana configuration for docker target
+server.name: "dnmp-kibana"
+
+server.host: "0.0.0.0"
+
+monitoring.ui.container.elasticsearch.enabled: true
+
+# 支持中文
+i18n.locale: "zh-CN"
+
+#
+## X-Pack security credentials
+#
+elasticsearch.username: "root"
+elasticsearch.password: "123456"
