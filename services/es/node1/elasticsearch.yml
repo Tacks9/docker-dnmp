@@ -1,0 +1,45 @@
+# vim services/es/node1/elasticsearch.yml
+
+#----------------------------------------------【集群配置】
+### 集群名称
+cluster.name: docker-es-cluster
+### 集群节点名称
+node.name: es-node1
+### 负责管理集群范围内的元数据操作
+# node.master: true
+### 负责存储和处理实际的数据
+# node.data: true
+
+#----------------------------------------------【网络配置】
+### 绑定 IP
+network.host: 0.0.0.0
+### 用于 REST API 的使用
+http.port: 9200
+### 用于节点间 TCP 通信
+transport.port: 9300
+
+#----------------------------------------------【跨域配置】
+
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+
+#----------------------------------------------【集群发现】
+ 
+### 设置用于节点发现的主机列表
+discovery.seed_hosts: ["es-node1:9300", "es-node2:9300", "es-node3:9300"]
+#### 设置初始主节点列表，这里设置为["es-node1"]，表示初始选举时只有一个主节点
+cluster.initial_master_nodes: ["es-node1"]
+
+
+#----------------------------------------------【其他配置】
+### 内存锁定，禁止内存与磁盘的置换
+bootstrap.memory_lock: true
+### 安全性：用户在执行需要谨慎对待的破坏性操作时，必须显式提供操作的名称
+action.destructive_requires_name: true
+
+
+
+
+
+
+

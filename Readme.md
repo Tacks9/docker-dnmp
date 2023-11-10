@@ -26,11 +26,16 @@
 │   │   ├── redis.conf                 redis.conf
 │   ├── grafana                 Grafana 
 │   │   ├── grafana.ini                 grafana.ini
+│   ├── es                      Elasticsearch Cluster
+│   │   ├── node1/                      node1 es.yml
+│   │   ├── node2/                      node2 es.yml
+│   │   ├── node3/                      node3 es.yml
 ├── logs                        Service Log
 │   ├── nginx                       Nginx Log
 │   ├── php74                       PHP74 Log
 │   ├── mysql                       Mysql Log
 │   ├── redis                       Redis Log
+│   ├── es                          Es Log
 ├── data                        Service Data
 │   ├── mysql                       Mysql Data
 │   ├── redis                       Redis Data
@@ -38,6 +43,7 @@
 │   ├── etcd                        Etcd Data
 │   ├── influxdb                    InfluxDB Data
 │   ├── grafana                     Grafana Data
+│   ├── es                          Elasticsearch Cluster Data
 ├── docker-compose.example.yml
 ├── env.example  
 └── www                   
@@ -53,6 +59,7 @@
 - etcd
 - influxdb
 - grafana
+- elasticsearch
 
 
 ## INIT
@@ -197,4 +204,138 @@ $ show field keys;
 
 # [influxdb sql] show data storage policy list
 $ show retention policies;
+```
+
+
+### elasticsearch
+
+```shell
+# come in es node1
+$ docker exec -it  dnmp-es-node1 /bin/bash
+
+# es show health
+$ curl -X GET es-node1:9200/_cat/health?v
+
+# es get cluster all index
+$ curl -X GET es-node1:9200/_cat/indices?v
+
+# es create index (index name is test)
+$ curl -X PUT es-node1:9200/test
+
+# es delete index (index name is test)
+$ curl -X DELETE es-node3:9200/test
+
+# es create single doucment (with test index & Specify _id=1)
+$ curl -X POST es-node1:9200/test/_doc/1 -H 'Content-type:application/json'  -d ' 
+{"name":"tacks","age":18,"intro":"Hello ES"}
+'
+
+# es batch create doucment (with test index & Specify _id)
+$ curl -X POST es-node1:9200/_bulk  -H 'Content-type:application/json'  -d '
+{ "index": { "_index": "test", "_id": "2" }}
+{ "name" : "user2", "age" : 20, "intro" : "Hello User2 "}
+{ "index": { "_index": "test", "_id": "3" }}
+{ "name" : "user3", "age" : 30, "intro" : "Hello User3"}
+'
+
+# es batch create doucment (with test index & Not Specify _id)
+$ curl -X POST es-node1:9200/test/_bulk  -H 'Content-type:application/json'  -d '
+{ "index": {}}
+{ "name" : "user4", "age" : 40, "intro" : "Hello User4 "}
+{ "index": {}}
+{ "name" : "user5", "age" : 50, "intro" : "Hello User5"}
+'
+
+# es search all data (with test index)
+$ curl -X GET es-node2:9200/test/_search
+
+
+# es search data by query (with test index & sort by age & limit 0,2)
+$ curl -X POST es-node2:9200/test/_search -H 'Content-type:application/json'  -d  '
+{
+    "query": {
+        "match_all": {}
+    },
+    "sort": [
+        {
+            "age": "asc"
+        }
+    ],
+    "from": 0,
+    "size": 2
+}
+'
+
+# es search data by query (with test index & id query )
+$ curl -X POST es-node2:9200/test/_search -H 'Content-type:application/json'  -d  '
+{
+    "query": {
+        "ids": {
+            "values": [
+                1,
+                3
+            ]
+        }
+    }
+}
+'
+
+# es search data by query (with test index & must [match=or] => [name=tacks or name=user2] )
+$ curl -X POST es-node2:9200/test/_search -H 'Content-type:application/json'  -d  '
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "name": "tacks user2" } }
+      ]
+    }
+  }
+}
+'
+
+# es search data by query (with test index & prefix query [user1 user2 ... user*] )
+$ curl -X POST es-node2:9200/test/_search -H 'Content-type:application/json'  -d  '
+{
+    "query": {
+        "prefix": {
+            "name": "user"
+        }
+    }
+}
+'
+
+# es search data by query (with test index & prefix query [user1 user2 ... user*] )
+
+$ curl -X POST es-node2:9200/test/_search -H 'Content-type:application/json'  -d  '
+{
+    "query": {
+        "prefix": {
+            "name": "user"
+        }
+    }
+}
+'
+
+
+# es search data by query (with test index & filter [ 18 <= age >= 30] )
+$ curl -X POST es-node2:9200/test/_search -H 'Content-type:application/json'  -d  '
+{
+    "query": {
+        "bool": {
+            "must": {
+                "match_all": {}
+            },
+            "filter": {
+                "range": {
+                    "age": {
+                        "gte": 18,
+                        "lte": 30
+                    }
+                }
+            }
+        }
+    }
+}
+'
+
 ```
